@@ -32,9 +32,11 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
           message: |
-            GitHub Actions Result:
-            - Repository: ${{ github.repository }}
-            - Branch: ${{ github.ref_name }}
-            - Workflow: ${{ github.workflow }}
-            - Status: ${{ job.status }}
-            - Triggered by: ${{ github.actor }}
+            🚀 **GitHub Actions Result** 🚀
+            🌟 **Repository**: `${{ github.repository }}`
+            🌲 **Branch**: `${{ github.ref_name }}`
+            🛠️ **Workflow**: `${{ github.workflow }}`
+            ${
+              { job.status }} == 'success' ? '✅ **Status**: SUCCESS' : '❌ **Status**: FAILED'
+            }
+            👤 **Triggered by**: `${{ github.actor }}`
