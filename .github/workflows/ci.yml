@@ -26,6 +26,15 @@ jobs:
       - name: Run tests
         run: npm run test
 
+      - name: Set Discord Message
+        id: discord_message
+        run: |
+          if [[ "${{ job.status }}" == "success" ]]; then
+            echo "::set-output name=message::✅ **Status**: SUCCESS"
+          else
+            echo "::set-output name=message::❌ **Status**: FAILED"
+          fi
+
       - name: Send Discord Notification
         if: always()
         uses: discord-actions/message@v2
@@ -36,7 +45,5 @@ jobs:
             🌟 **Repository**: `${{ github.repository }}`
             🌲 **Branch**: `${{ github.ref_name }}`
             🛠️ **Workflow**: `${{ github.workflow }}`
-            ${
-              { job.status }} == 'success' ? '✅ **Status**: SUCCESS' : '❌ **Status**: FAILED'
-            }
+              ${{ steps.discord_message.outputs.message }}
             👤 **Triggered by**: `${{ github.actor }}`
