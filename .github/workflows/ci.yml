@@ -4,18 +4,37 @@ on:
   push:
     branches:
       - main
+      - development
       - staging
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
       - name: Install dependencies
         run: npm install
+
       - name: Run tests
-        run: npm test
+        run: npm run test
+
+      - name: Send Discord Notification
+        if: always()
+        uses: Ilshidur/action-discord@2.0.2
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            GitHub Actions Result:
+            - Repository: ${{ github.repository }}
+            - Branch: ${{ github.ref_name }}
+            - Workflow: ${{ github.workflow }}
+            - Status: ${{ job.status }}
+            - Triggered by: ${{ github.actor }}
